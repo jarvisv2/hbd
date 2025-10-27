@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Loader</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes float { 0%{transform:translate(0,0)rotate(0deg)scale(1);} 50%{transform:translate(var(--dx,0px),-20px)rotate(var(--rot,0deg))scale(1.1);} 100%{transform:translate(0,0)rotate(0deg)scale(1);} }
+    @keyframes bounceHeart { 0%,100%{transform:translateY(0)scale(1);} 50%{transform:translateY(-15px)scale(1.2);} }
+    @keyframes pulseScale { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
+    @keyframes wiggleFloat { 0%,100%{transform:rotate(-10deg)translateY(0)scale(1);} 50%{transform:rotate(10deg)translateY(-5px)scale(1.2);} }
+    .floating { animation:float var(--dur,4s) ease-in-out infinite alternate; }
+    .bounce { animation:bounceHeart 1s infinite; }
+    .pulse { animation:pulseScale 2s infinite; }
+    .wiggle { animation:wiggleFloat var(--dur,2s) ease-in-out infinite; cursor:pointer; }
+    .icon-fill svg { fill:currentColor; }
+    @keyframes vanishOut { to { opacity:0; transform:scale(0.7) translateY(-10px); filter:blur(2px);} }
+    .vanish { animation:vanishOut 0.4s ease forwards; }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-b from-rose-100 to-purple-100 overflow-hidden">
+  <div id="bg-icons" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
+  <div class="relative z-10 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg shadow-rose-100 p-8 border-4 border-pink-200 flex flex-col items-center max-w-xs mx-auto">
+    <div class="flex justify-center space-x-3 mb-5">
+      <i data-lucide="heart" class="w-8 h-8 text-pink-400 icon-fill" style="animation:bounceHeart 1s infinite; animation-delay:0s;"></i>
+      <i data-lucide="heart" class="w-8 h-8 text-pink-500 icon-fill" style="animation:bounceHeart 1s infinite; animation-delay:.2s;"></i>
+      <i data-lucide="heart" class="w-8 h-8 text-purple-400 icon-fill" style="animation:bounceHeart 1s infinite; animation-delay:.4s;"></i>
+    </div>
+    <p class="text-xl font-bold text-center text-pink-600 mb-3" style="animation:pulseScale 2s infinite;">
+      Loading something special...
+    </p>
+    <div id="emoji-row" class="flex justify-center space-x-4 mt-5 text-xl">
+      <span class="wiggle" data-emoji style="--dur:2s; animation-delay:0s;">🎂</span>
+      <span class="wiggle" data-emoji style="--dur:2s; animation-delay:.2s;">✨</span>
+      <span class="wiggle" data-emoji style="--dur:2s; animation-delay:.4s;">🎁</span>
+      <span class="wiggle" data-emoji style="--dur:2s; animation-delay:.6s;">💖</span>
+      <span class="wiggle" data-emoji style="--dur:2s; animation-delay:.8s;">🎈</span>
+    </div>
+  </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Floating background icons
+    const rand = (min, max) => Math.random() * (max - min) + min;
+    const container = document.getElementById('bg-icons');
+    const count = 20;
+    for (let i = 0; i < count; i++) {
+      const wrapper = document.createElement('span');
+      wrapper.className = 'absolute floating';
+      wrapper.style.left = rand(0, 100) + '%';
+      wrapper.style.top  = rand(0, 100) + '%';
+      wrapper.style.setProperty('--dur', (3 + Math.random() * 3) + 's');
+      wrapper.style.setProperty('--dx', (Math.random() * 20 - 10) + 'px');
+      wrapper.style.setProperty('--rot', (Math.random() * 10 - 5) + 'deg');
+      wrapper.style.animationDelay = (Math.random() * 2) + 's';
+      const size = 4 + (i % 4);
+      const which = (i % 5 === 0) ? 'star' : (i % 5 === 1 ? 'sparkles' : 'heart');
+      const icon = document.createElement('i');
+      icon.setAttribute('data-lucide', which);
+      icon.className = `w-${size} h-${size} opacity-70`;
+      if (which === 'star') icon.classList.add('text-yellow-300','fill-yellow-100','icon-fill');
+      else if (which === 'sparkles') icon.classList.add('text-purple-300');
+      else {
+        if (i % 3 === 0) icon.classList.add('text-pink-300');
+        else if (i % 3 === 1) icon.classList.add('text-pink-400');
+        else icon.classList.add('text-purple-300');
+        icon.classList.add(i % 2 === 0 ? 'fill-pink-100' : 'fill-pink-200','icon-fill');
+      }
+      wrapper.appendChild(icon);
+      container.appendChild(wrapper);
+    }
+    lucide.createIcons();
+
+    // Emoji logic - all must be clicked before redirect
+    const emojiSpans = document.querySelectorAll('#emoji-row [data-emoji]');
+    let clickedCount = 0;
+    emojiSpans.forEach(span => {
+      span.addEventListener('click', function(e) {
+        if (span.classList.contains('vanish')) return;
+        span.classList.add('vanish');
+        span.style.pointerEvents = 'none';
+        clickedCount++;
+        if (clickedCount === emojiSpans.length) {
+          setTimeout(() => {
+            window.location.href = 'countdown.html';
+          }, 450);
+        }
+      });
+    });
+  </script>
+
+  <!-- TRUE PERSISTENT AUDIO - NEVER RESTARTS -->
+  <script>
+  (function(){
+    const MUSIC_SRC = "https://raw.githubusercontent.com/jarvisv2/happybirthday/main/music/barbaad.mp3";
+    
+    if (!window.persistentAudio) {
+      console.log("🎵 Starting music for the first time");
+      window.persistentAudio = new Audio(MUSIC_SRC);
+      window.persistentAudio.loop = true;
+      window.persistentAudio.volume = 0.6;
+      window.persistentAudio.preload = "auto";
+      
+      let playPromise = window.persistentAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function(error) {
+          console.log("🔇 Autoplay blocked, waiting for user click");
+          document.addEventListener('click', function() {
+            window.persistentAudio.play();
+            console.log("🎵 Music started after user interaction");
+          }, { once: true });
+        });
+      }
+    } else {
+      console.log("🎵 Music already exists, continuing seamlessly");
+      if (window.persistentAudio.paused) {
+        window.persistentAudio.play().catch(function(error) {
+          console.log("⚠️ Could not resume audio:", error);
+        });
+      }
+    }
+  })();
+  </script>
+</body>
+</html>
+

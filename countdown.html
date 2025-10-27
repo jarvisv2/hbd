@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>5s Countdown with Background Hearts</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @keyframes floatHeart {
+      0%{transform:translateY(0)translateX(0)rotate(0deg)scale(1);}
+      50%{transform:translateY(-20px)translateX(var(--random-x,0px))rotate(var(--random-rot,0deg))scale(1.1);}
+      100%{transform:translateY(0)translateX(0)rotate(0deg)scale(1);}
+    }
+    @keyframes pulseScaleMirror {0%{transform:scale(0.95);} 100%{transform:scale(1);} }
+    @keyframes fadeUp {0%{transform:translateY(20px);opacity:0;} 100%{transform:translateY(0);opacity:1;} }
+    @keyframes dotPulse {0%{transform:scale(1);opacity:0.7;}50%{transform:scale(1.5);opacity:1;}100%{transform:scale(1);opacity:0.7;} }
+    @keyframes hoverWiggle {0%{transform:rotate(-1deg);}33%{transform:rotate(1deg);}66%{transform:rotate(-1deg);}100%{transform:rotate(0deg);} }
+    .floating-heart {animation:floatHeart var(--duration,4s) ease-in-out infinite alternate; animation-delay:var(--delay,0s);}
+    .pulse-mirror {animation:pulseScaleMirror 1.5s ease-in-out infinite alternate;}
+    .fade-up {animation:fadeUp 0.5s ease-out both;}
+    .hover-wiggle:hover {animation:hoverWiggle 0.4s ease-in-out;transform:scale(1.05);}
+    .dot {width:0.75rem;height:0.75rem;border-radius:9999px;background-color:rgb(244 114 182);animation:dotPulse 1s infinite;}
+    .icon-fill svg { fill: currentColor; }
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gradient-to-b from-rose-100 to-purple-100 overflow-hidden">
+  <div id="bg-hearts" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
+  <div class="relative z-10 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg shadow-rose-100 p-8 border-4 border-pink-200 max-w-2xl mx-4">
+    <div class="flex flex-col items-center justify-center">
+      <h1 class="text-3xl md:text-4xl font-bold text-center text-pink-600 min-h-20 sm:min-h-11 mb-6 pulse-mirror">
+        Your Special Day is Almost Here💕
+      </h1>
+      <div id="cards" class="flex flex-wrap justify-center gap-4 mb-8">
+        <div class="bg-white rounded-3xl shadow-lg p-4 w-28 h-28 flex flex-col items-center justify-center border-2 border-pink-200 fade-up hover-wiggle" style="animation-delay:0s;">
+          <div id="days-value" class="text-3xl font-bold text-purple-600">0</div>
+          <div class="text-sm text-pink-500 capitalize">days</div>
+          <div class="mt-1"><i data-lucide="heart" class="text-pink-500 icon-fill"></i></div>
+        </div>
+        <div class="bg-white rounded-3xl shadow-lg p-4 w-28 h-28 flex flex-col items-center justify-center border-2 border-pink-200 fade-up hover-wiggle" style="animation-delay:.1s;">
+          <div id="hours-value" class="text-3xl font-bold text-purple-600">0</div>
+          <div class="text-sm text-pink-500 capitalize">hours</div>
+          <div class="mt-1"><i data-lucide="gift" class="text-purple-500"></i></div>
+        </div>
+        <div class="bg-white rounded-3xl shadow-lg p-4 w-28 h-28 flex flex-col items-center justify-center border-2 border-pink-200 fade-up hover-wiggle" style="animation-delay:.2s;">
+          <div id="minutes-value" class="text-3xl font-bold text-purple-600">0</div>
+          <div class="text-sm text-pink-500 capitalize">minutes</div>
+          <div class="mt-1"><i data-lucide="cake" class="text-pink-500"></i></div>
+        </div>
+        <div class="bg-white rounded-3xl shadow-lg p-4 w-28 h-28 flex flex-col items-center justify-center border-2 border-pink-200 fade-up hover-wiggle" style="animation-delay:.3s;">
+          <div id="seconds-value" class="text-3xl font-bold text-purple-600">5</div>
+          <div class="text-sm text-pink-500 capitalize">seconds</div>
+          <div class="mt-1"><i data-lucide="star" class="text-yellow-400 icon-fill"></i></div>
+        </div>
+      </div>
+      <div class="text-center max-w-md mx-auto bg-pink-50 p-4 rounded-3xl border-2 border-pink-100 fade-up" style="animation-delay: 0.5s;">
+        <p class="text-lg text-purple-700 mb-4">
+          Just a little more... A small gift for my favorite person❤️
+        </p>
+        <div class="flex justify-center space-x-2">
+          <span class="dot" style="animation-delay: 0s;"></span>
+          <span class="dot" style="animation-delay: .3s;"></span>
+          <span class="dot" style="animation-delay: .6s;"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script>
+    // Background hearts
+    const heartsContainer = document.getElementById('bg-hearts');
+    const heartCount = 20;
+    for (let i = 0; i < heartCount; i++) {
+      const heart = document.createElement('div');
+      heart.className = 'absolute floating-heart opacity-70';
+      heart.style.left = Math.random() * 100 + '%';
+      heart.style.top = Math.random() * 100 + '%';
+      heart.style.setProperty('--duration', (3 + Math.random() * 3) + 's');
+      heart.style.setProperty('--delay', Math.random() * 2 + 's');
+      heart.style.setProperty('--random-x', (Math.random() * 20 - 10) + 'px');
+      heart.style.setProperty('--random-rot', (Math.random() * 10 - 5) + 'deg');
+      const icon = document.createElement('i');
+      icon.setAttribute('data-lucide', 'heart');
+      const size = 4 + (i % 4);
+      icon.className = `w-${size} h-${size} icon-fill`;
+      if (i % 3 === 0) icon.classList.add('text-pink-300','fill-pink-100');
+      else if (i % 3 === 1) icon.classList.add('text-pink-400','fill-pink-200');
+      else icon.classList.add('text-purple-300','fill-purple-100');
+      heart.appendChild(icon);
+      heartsContainer.appendChild(heart);
+    }
+    lucide.createIcons();
+
+    // Countdown logic
+    let totalSeconds = 5;
+    const daysEl = document.getElementById('days-value');
+    const hoursEl = document.getElementById('hours-value');
+    const minutesEl = document.getElementById('minutes-value');
+    const secondsEl = document.getElementById('seconds-value');
+    const cardsEl = document.getElementById('cards');
+    
+    function renderDHMS(total) {
+      const days = Math.floor(total / 86400);
+      const hours = Math.floor((total % 86400) / 3600);
+      const minutes = Math.floor((total % 3600) / 60);
+      const seconds = total % 60;
+      daysEl.textContent = days;
+      hoursEl.textContent = hours;
+      minutesEl.textContent = minutes;
+      secondsEl.textContent = seconds;
+    }
+    
+    function showSurpriseButton() {
+      cardsEl.innerHTML = '<button id="surprise-btn" class="mt-2 bg-pink-500 text-white font-semibold py-3 px-5 rounded-2xl hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-300">🎉 Surprise! The wait is over! 🎁</button>';
+      document.getElementById('surprise-btn').addEventListener('click', function() {
+        window.location.href = 'birthday.html';
+      });
+    }
+    
+    renderDHMS(totalSeconds);
+    const timer = setInterval(() => {
+      totalSeconds -= 1;
+      if (totalSeconds <= 0) {
+        clearInterval(timer);
+        renderDHMS(0);
+        showSurpriseButton();
+      } else {
+        renderDHMS(totalSeconds);
+      }
+    }, 1000);
+  </script>
+
+  <!-- TRUE PERSISTENT AUDIO - CONTINUES FROM PAGE 1 -->
+  <script>
+  (function(){
+    const MUSIC_SRC = "https://raw.githubusercontent.com/jarvisv2/happybirthday/main/music/barbaad.mp3";
+    
+    if (!window.persistentAudio) {
+      console.log("🎵 Starting music for the first time");
+      window.persistentAudio = new Audio(MUSIC_SRC);
+      window.persistentAudio.loop = true;
+      window.persistentAudio.volume = 0.6;
+      window.persistentAudio.preload = "auto";
+      
+      let playPromise = window.persistentAudio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(function(error) {
+          console.log("🔇 Autoplay blocked, waiting for user click");
+          document.addEventListener('click', function() {
+            window.persistentAudio.play();
+            console.log("🎵 Music started after user interaction");
+          }, { once: true });
+        });
+      }
+    } else {
+      console.log("🎵 Music already exists, continuing seamlessly");
+      if (window.persistentAudio.paused) {
+        window.persistentAudio.play().catch(function(error) {
+          console.log("⚠️ Could not resume audio:", error);
+        });
+      }
+    }
+  })();
+  </script>
+</body>
+</html>
