@@ -1,67 +1,47 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Birthday Surprise!</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Birthday Surprise SPA</title>
+  <meta name="title" content="Happy Birthday | darkshadeoflove" />
+  <meta name="github" content="https://github.com/jarvisv2" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Caveat:wght@600&family=Inter:wght@500&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* --- Animations (loader) --- */
-    @keyframes float { 0%{transform:translate(0,0)rotate(0deg)scale(1);} 50%{transform:translate(var(--dx,0px),-20px)rotate(var(--rot,0deg))scale(1.1);} 100%{transform:translate(0,0)rotate(0deg)scale(1);} }
-    @keyframes bounceHeart { 0%,100%{transform:translateY(0)scale(1);} 50%{transform:translateY(-15px)scale(1.2);} }
-    @keyframes pulseScale { 0%,100%{transform:scale(1);} 50%{transform:scale(1.05);} }
-    @keyframes wiggleFloat { 0%,100%{transform:rotate(-10deg)translateY(0)scale(1);} 50%{transform:rotate(10deg)translateY(-5px)scale(1.2);} }
-    .floating { animation:float var(--dur,4s) ease-in-out infinite alternate; }
-    .bounce { animation:bounceHeart 1s infinite; }
-    .pulse { animation:pulseScale 2s infinite; }
-    .wiggle { animation:wiggleFloat var(--dur,2s) ease-in-out infinite; cursor:pointer; }
-    .icon-fill svg { fill:currentColor; }
-    @keyframes vanishOut { to { opacity:0; transform:scale(0.7) translateY(-10px); filter:blur(2px);} }
-    .vanish { animation:vanishOut 0.4s ease forwards; }
-    /* --- Animations (countdown) --- */
-    @keyframes floatHeart { 0%{transform:translateY(0)translateX(0)rotate(0deg)scale(1);} 50%{transform:translateY(-20px)translateX(var(--random-x,0px))rotate(var(--random-rot,0deg))scale(1.1);} 100%{transform:translateY(0)translateX(0)rotate(0deg)scale(1);} }
-    @keyframes pulseScaleMirror {0%{transform:scale(0.95);} 100%{transform:scale(1);} }
-    @keyframes fadeUp {0%{transform:translateY(20px);opacity:0;} 100%{transform:translateY(0);opacity:1;} }
-    @keyframes dotPulse {0%{transform:scale(1);opacity:0.7;}50%{transform:scale(1.5);opacity:1;}100%{transform:scale(1);opacity:0.7;} }
-    @keyframes hoverWiggle {0%{transform:rotate(-1deg);}33%{transform:rotate(1deg);}66%{transform:rotate(-1deg);}100%{transform:rotate(0deg);} }
-    .floating-heart {animation:floatHeart var(--duration,4s) ease-in-out infinite alternate; animation-delay:var(--delay,0s);}
-    .pulse-mirror {animation:pulseScaleMirror 1.5s ease-in-out infinite alternate;}
-    .fade-up {animation:fadeUp 0.5s ease-out both;}
-    .hover-wiggle:hover {animation:hoverWiggle 0.4s ease-in-out;transform:scale(1.05);}
-    .dot {width:0.75rem;height:0.75rem;border-radius:9999px;background-color:rgb(244 114 182);animation:dotPulse 1s infinite;}
-    .icon-fill svg { fill: currentColor; }
+    /* put your custom and SPA loader/countdown CSS here (from previous code) */
+    /* and all .cake, animation, etc. code from your page above */
+    /*** Add your full style block from your birthday page code here ***/
   </style>
 </head>
 <body class="min-h-screen bg-gradient-to-b from-rose-100 to-purple-100 overflow-hidden">
-
-<!-- SPA root wrapper -->
 <div id="app"></div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
-/* Persistent Music: start ONCE, never stop, never restart */
+/* -- Music: start once, never restart -- */
 (function(){
-  const MUSIC_SRC = "https://raw.githubusercontent.com/jarvisv2/hbd/main/music/barbaad.mp3"; // CHANGE THIS!
+  const MUSIC_SRC = "https://raw.githubusercontent.com/USERNAME/REPO/main/music/barbaad.mp3"; // CHANGE THIS
   if (!window.persistentAudio) {
     window.persistentAudio = new Audio(MUSIC_SRC);
     window.persistentAudio.loop = true;
-    window.persistentAudio.volume = 0.6;
+    window.persistentAudio.volume = 0.7;
     window.persistentAudio.preload = "auto";
     let playPromise = window.persistentAudio.play();
     if (playPromise !== undefined) {
-      playPromise.catch(function(error) {
-        document.addEventListener('click', function() {
-          window.persistentAudio.play();
-        }, { once:true });
+      playPromise.catch(function() {
+        document.addEventListener('click', () => window.persistentAudio.play(), { once: true });
       });
     }
   }
 })();
 
-/* --- SPA PAGE RENDERERS --- */
-const app = document.getElementById("app");
+const app = document.getElementById('app');
 
-// --- Page 1: Loader/Emoji ---
+// -- Loader Page
 function showLoaderPage() {
   app.innerHTML = `
     <div id="bg-icons" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
@@ -85,14 +65,14 @@ function showLoaderPage() {
       </div>
     </div>
   `;
-  // Floating background
+  // Draw floating icons
   const container = document.getElementById('bg-icons');
   const count = 20;
   for (let i = 0; i < count; i++) {
     const wrapper = document.createElement('span');
     wrapper.className = 'absolute floating';
     wrapper.style.left = Math.random() * 100 + '%';
-    wrapper.style.top = Math.random() * 100 + '%';
+    wrapper.style.top  = Math.random() * 100 + '%';
     wrapper.style.setProperty('--dur', (3 + Math.random() * 3) + 's');
     wrapper.style.setProperty('--dx', (Math.random() * 20 - 10) + 'px');
     wrapper.style.setProperty('--rot', (Math.random() * 10 - 5) + 'deg');
@@ -131,9 +111,10 @@ function showLoaderPage() {
   });
 }
 
-// --- Page 2: Countdown ---
+// -- Countdown Page
 function showCountdownPage() {
-  ` <div id="bg-hearts" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
+  app.innerHTML = `
+    <div id="bg-hearts" class="fixed inset-0 overflow-hidden pointer-events-none"></div>
     <div class="flex items-center justify-center min-h-screen">
       <div class="relative z-10 bg-white/80 backdrop-blur-sm rounded-3xl shadow-lg shadow-rose-100 p-8 border-4 border-pink-200 max-w-2xl mx-4">
         <div class="flex flex-col items-center justify-center">
@@ -236,158 +217,144 @@ function showCountdownPage() {
   }, 1000);
 }
 
-// --- Page 3: Birthday page (demo content) ---
+// -- 3rd Page: Your FULL birthday celebration HTML here --
 function showBirthdayPage() {
   app.innerHTML = `
-<!-- Cake with candles spelling "Supriya" + soft pink quote -->
-<div id="cake-intro" aria-hidden="true">
-  <div class="ci-stage" role="img" aria-label="Beautiful birthday cake with candles spelling Supriya">
-    <svg class="ci-cake" viewBox="0 0 380 280" width="400" height="300" aria-hidden="true">
-      <!-- ...cake SVG code... (unchanged) ... -->
-    </svg>
-    <div class="ci-knife" aria-hidden="true">
-      <span class="ci-blade"></span>
-      <span class="ci-handle"></span>
-    </div>
-    <button class="ci-cut-btn" id="ci-cut-btn">Cut Cake 🍰</button>
-    <div class="cake-quote">Wishing you joy &amp; love!</div>
-  </div>
-  <button id="ci-skip" class="ci-skip" type="button">Skip</button>
-</div>
-
-<div id="wrapper">
-    <!-- ...flag, decorations, letter, balloons, etc... (unchanged) ... -->
-</div>
-
-<div id="copy">
-    <p class="text-center text-white text-sm">Instagram <a
-        href="https://www.instagram.com/aoudumber.dev/reels/#">@darkshadeoflove</a></p>
-</div>
- 
-<!-- You must re-initialize scripts after SPA injection! -->
- 
-<script>
-(function(){
-  const intro = document.getElementById('cake-intro');
-  if(!intro) return;
-  const cutBtn = document.getElementById('ci-cut-btn');
-  const quote = intro.querySelector('.cake-quote');
-  function burst(n=30){
-    const colors=['#fe8dc6','#fbbf24','#a3e635','#60b5fa','#ab8bfa','#f782b6'];
-    for(let i=0;i<n;i++){
-      const s=document.createElement('span');
-      s.className='confetti';
-      s.style.background = colors[i % colors.length];
-      s.style.setProperty('--x', (Math.random()*260-130)+'px');
-      s.style.setProperty('--d', (1.3+Math.random()*0.8).toFixed(2)+'s');
-      s.style.setProperty('--dl', (0.05+Math.random()*0.35).toFixed(2)+'s');
-      intro.appendChild(s);
-      setTimeout(()=>s.remove(), 2100);
-    }
-  }
-  function playCut(){
-    cutBtn.style.display="none";
-    intro.classList.add('ci-cut');
-    burst(30);
-    setTimeout(()=>{intro.classList.add('ci-quote');},950);
-    setTimeout(hide, 2600);
-  }
-  function hide(){
-    intro.classList.add('ci-fade-out');
-    setTimeout(()=>intro.remove(), 800);
-  }
-  cutBtn.addEventListener('click', playCut);
-  document.getElementById('ci-skip').addEventListener('click', hide);
-})();
-</script>
-
-<script>
-    let datetxt = "2 Nov  1999";
-    let datatxtletter = "Happy birthday to the most beautiful, special girl in my heart. May your birthday be as beautiful and special as you are. Wishing you all the happiness your heart can hold on your special day.💕";
-    let titleLetter = "To you";
-    let charArrDate = datetxt.split('');
-    let charArrDateLetter = datatxtletter.split('');
-    let charArrTitle = titleLetter.split('');
-    let currentIndex = 0;
-    let currentIndexLetter = 0;
-    let currentIndexTitle = 0;
-    let date__of__birth = document.querySelector(".date__of__birth span");
-    let text__letter = document.querySelector(".text__letter p");
-    setTimeout(function(){
-        timeDatetxt = setInterval(function(){
-            if(currentIndex < charArrDate.length){
-                date__of__birth.textContent += charArrDate[currentIndex];
-                currentIndex++;
-            }
-            else{
-                let i = document.createElement("i");
-                i.className = "fa-solid fa-star"
-                document.querySelector(".date__of__birth").prepend(i)
-                document.querySelector(".date__of__birth").appendChild(i.cloneNode(true))
-                clearInterval(timeDatetxt)
-            }
-        },100)
-    },12000)
-
-    var intervalContent;
-    var intervalTitle;
-    $("#btn__letter").on("click", function(){
-        $(".box__letter").slideDown()
-        setTimeout(function(){
-            $(".letter__border").slideDown();
-        },1000)
-        setTimeout(function(){
-            intervalTitle = setInterval(function(){
-                if(currentIndexTitle < charArrTitle.length){
-                    document.querySelector(".title__letter").textContent += charArrTitle[currentIndexTitle];
-                    let i = document.createElement("i");
-                    i.className = "fa-solid fa-heart"
-                    document.querySelector(".title__letter").appendChild(i)
-                    currentIndexTitle++;
-                }
-                else{
-                    clearInterval(intervalTitle)
-                }
-            },100)
-        },2000)
-        setTimeout(function(){
-            document.querySelector("#heart__letter").classList.add("animationOp");
-            document.querySelector(".love__img").classList.add("animationOp");
-            document.querySelector("#mewmew").classList.add("animationOp");
-        },2800)
-        setTimeout(function(){
-            document.querySelectorAll(".heart").forEach((item)=>{
-                item.classList.add("animation")
-            })
-        },3500)
-        setTimeout(function(){
-            intervalContent = setInterval(function(){
-                if(currentIndexLetter < charArrDateLetter.length){
-                    text__letter.textContent += charArrDateLetter[currentIndexLetter];
-                    currentIndexLetter++;
-                }
-                else{
-                    clearInterval(intervalContent)
-                }
-            },50)
-        },6000)
-    })
-    $(".close").on("click", function(){
-        clearInterval(intervalContent)
-        document.querySelector(".title__letter").textContent = "";
-        text__letter.textContent = "";
-        currentIndexLetter = 0
-        currentIndexTitle = 0
-        document.querySelector("#heart__letter").classList.remove("animationOp");
-        document.querySelector(".love__img").classList.remove("animationOp");
-        document.querySelector("#mewmew").classList.remove("animationOp");
-        document.querySelectorAll(".heart").forEach((item)=>{
-                item.classList.remove("animation")
-            })
-        $(".box__letter").slideUp();
-        $(".letter__border").slideUp();
-    })
-</script>
+    <!-- Paste EVERYTHING between <body> ... </body> from your 3rd page code here (except <body/>) -->
+    <!-- This will include the cake, animations, all wrappers, and scripts (scripts are added below) -->
+    ${String.raw`
+      <!-- Cake with candles spelling "Supriya" + soft pink quote -->
+      <div id="cake-intro" aria-hidden="true"> ... your code ... </div>
+      <div id="wrapper"> ... your code ... </div>
+      <div id="copy"> ... your code ... </div>
+      <!-- all the rest of your copied HTML from your birthday page, unchanged -->
+    `}
   `;
-  // If your page uses external CSS/JS (jQuery, FontAwesome, GoogleFonts), add their <link> and <script> tags to the SPA's <head> only ONCE (not inside this function, but in the main HTML file).
+
+  // Now re-run your third page's scripts (animation, letter, etc). Paste scripts after setting innerHTML.
+  // CAKE ANIMATION JAVASCRIPT:
+  (function(){
+    const intro = document.getElementById('cake-intro');
+    const cutBtn = document.getElementById('ci-cut-btn');
+    if (intro && cutBtn) {
+      const quote = intro.querySelector('.cake-quote');
+      function burst(n=30){
+        const colors=['#fe8dc6','#fbbf24','#a3e635','#60b5fa','#ab8bfa','#f782b6'];
+        for(let i=0;i<n;i++){
+          const s=document.createElement('span');
+          s.className='confetti';
+          s.style.background = colors[i % colors.length];
+          s.style.setProperty('--x', (Math.random()*260-130)+'px');
+          s.style.setProperty('--d', (1.3+Math.random()*0.8).toFixed(2)+'s');
+          s.style.setProperty('--dl', (0.05+Math.random()*0.35).toFixed(2)+'s');
+          intro.appendChild(s);
+          setTimeout(()=>s.remove(), 2100);
+        }
+      }
+      function playCut(){
+        cutBtn.style.display="none";
+        intro.classList.add('ci-cut');
+        burst(30);
+        setTimeout(()=>{intro.classList.add('ci-quote');},950);
+        setTimeout(hide, 2600);
+      }
+      function hide(){
+        intro.classList.add('ci-fade-out');
+        setTimeout(()=>intro.remove(), 800);
+      }
+      cutBtn.addEventListener('click', playCut);
+      document.getElementById('ci-skip').addEventListener('click', hide);
+    }
+  })();
+
+  // jQuery Letter Animation (rerun after HTML is loaded)
+  let datetxt = "2 Nov  1999";
+  let datatxtletter = "Happy birthday to the most beautiful, special girl in my heart. May your birthday be as beautiful and special as you are. Wishing you all the happiness your heart can hold on your special day.💕";
+  let titleLetter = "To you";
+  let charArrDate = datetxt.split('');
+  let charArrDateLetter = datatxtletter.split('');
+  let charArrTitle = titleLetter.split('');
+  let currentIndex = 0;
+  let currentIndexLetter = 0;
+  let currentIndexTitle = 0;
+  let date__of__birth = document.querySelector(".date__of__birth span");
+  let text__letter = document.querySelector(".text__letter p");
+  setTimeout(function(){
+      timeDatetxt = setInterval(function(){
+          if(currentIndex < charArrDate.length){
+              date__of__birth.textContent += charArrDate[currentIndex];
+              currentIndex++;
+          }
+          else{
+              let i = document.createElement("i");
+              i.className = "fa-solid fa-star"
+              document.querySelector(".date__of__birth").prepend(i)
+              document.querySelector(".date__of__birth").appendChild(i.cloneNode(true))
+              clearInterval(timeDatetxt)
+          }
+      },100)
+  },12000)
+
+  var intervalContent;
+  var intervalTitle;
+  $("#btn__letter").on("click", function(){
+      $(".box__letter").slideDown()
+      setTimeout(function(){
+          $(".letter__border").slideDown();
+      },1000)
+      setTimeout(function(){
+          intervalTitle = setInterval(function(){
+              if(currentIndexTitle < charArrTitle.length){
+                  document.querySelector(".title__letter").textContent += charArrTitle[currentIndexTitle];
+                  let i = document.createElement("i");
+                  i.className = "fa-solid fa-heart"
+                  document.querySelector(".title__letter").appendChild(i)
+                  currentIndexTitle++;
+              }
+              else{
+                  clearInterval(intervalTitle)
+              }
+          },100)
+      },2000)
+      setTimeout(function(){
+          document.querySelector("#heart__letter").classList.add("animationOp");
+          document.querySelector(".love__img").classList.add("animationOp");
+          document.querySelector("#mewmew").classList.add("animationOp");
+      },2800)
+      setTimeout(function(){
+          document.querySelectorAll(".heart").forEach((item)=>{
+              item.classList.add("animation")
+          })
+      },3500)
+      setTimeout(function(){
+          intervalContent = setInterval(function(){
+              if(currentIndexLetter < charArrDateLetter.length){
+                  text__letter.textContent += charArrDateLetter[currentIndexLetter];
+                  currentIndexLetter++;
+              }
+              else{
+                  clearInterval(intervalContent)
+              }
+          },50)
+      },6000)
+  })
+  $(".close").on("click", function(){
+      clearInterval(intervalContent)
+      document.querySelector(".title__letter").textContent = "";
+      text__letter.textContent = "";
+      currentIndexLetter = 0
+      currentIndexTitle = 0
+      document.querySelector("#heart__letter").classList.remove("animationOp");
+      document.querySelector(".love__img").classList.remove("animationOp");
+      document.querySelector("#mewmew").classList.remove("animationOp");
+      document.querySelectorAll(".heart").forEach((item)=>{
+              item.classList.remove("animation")
+          })
+      $(".box__letter").slideUp();
+      $(".letter__border").slideUp();
+  })
 }
+showLoaderPage();
+</script>
+</body>
+</html>
